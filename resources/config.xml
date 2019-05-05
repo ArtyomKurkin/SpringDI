@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--First task-->
+    <bean id="goalkeaper" class="com.netcracker.football.Goalkeaper" scope="prototype"/>
+    <bean id="defender" class="com.netcracker.football.Defender" scope="prototype"/>
+    <bean id="midfielder" class="com.netcracker.football.Midfielder" scope="prototype"/>
+    <bean id="forward" class="com.netcracker.football.Forward" scope="prototype"/>
+
+    <!--CI-->
+    <bean id="player1" class="com.netcracker.football.Player" scope="prototype">
+        <constructor-arg index="0" ref="forward"/>
+        <constructor-arg index="1" value="25"/>
+        <constructor-arg index="2" value="74"/>
+    </bean>
+    <!--SI-->
+    <bean id="player2" class="com.netcracker.football.Player" scope="prototype">
+        <property name="position" ref="defender"/>
+        <property name="number" value="5"/>
+        <property name="age" value="30"/>
+    </bean>
+
+    <!--Second task-->
+    <bean id="lion1" class="com.netcracker.zoo.Lion" scope="prototype">
+        <property name="name" value="Leva"/>
+        <property name="food" value="Meat"/>
+    </bean>
+
+    <bean id="lion2" class="com.netcracker.zoo.Lion" scope="prototype">
+        <property name="name" value="Simba"/>
+        <property name="food" value="Meat"/>
+    </bean>
+
+    <bean id="squirrel" class="com.netcracker.zoo.Squirrel" scope="prototype">
+        <property name="name" value="Belka"/>
+        <property name="food" value="nuts"/>
+    </bean>
+
+    <bean id="goat" class="com.netcracker.zoo.Goat" scope="prototype">
+        <property name="name" value="LeBron"/>
+        <property name="food" value="grass"/>
+    </bean>
+
+    <bean id="bear" class="com.netcracker.zoo.Bear" scope="prototype">
+        <property name="name" value="Misha"/>
+        <property name="food" value="honey"/>
+    </bean>
+
+    <!--SI-->
+    <bean id="zoo_limpopo" class="com.netcracker.zoo.Zoo" scope="prototype">
+        <property name="animals">
+            <list>
+                <ref bean="lion1"/>
+                <ref bean="lion2"/>
+                <ref bean="bear"/>
+            </list>
+        </property>
+        <property name="nutrition">
+            <map>
+                <entry key="#{lion1}" value="meat"/>
+                <entry key="#{lion2}" value="meat"/>
+                <entry key="#{bear}" value="honey"/>
+            </map>
+        </property>
+        <property name="kind">
+            <set>
+                <ref bean="lion1"/>
+                <ref bean="bear"/>
+            </set>
+        </property>
+    </bean>
+
+    <!--CI-->
+    <bean id="zoo_madagascar" class="com.netcracker.zoo.Zoo" scope="prototype">
+        <constructor-arg index="0">
+            <list>
+                <ref bean="bear"/>
+                <ref bean="lion1"/>
+                <ref bean="squirrel"/>
+                <ref bean="goat"/>
+            </list>
+        </constructor-arg>
+        <constructor-arg index="1">
+            <map>
+                <entry key="#{bear}" value="honey"/>
+                <entry key="#{lion1}" value="meat"/>
+                <entry key="#{squirrel}" value="nuts"/>
+                <entry key="#{goat}" value="grass"/>
+            </map>
+        </constructor-arg>
+        <constructor-arg index="2">
+            <set>
+                <ref bean="bear"/>
+                <ref bean="lion1"/>
+                <ref bean="squirrel"/>
+                <ref bean="goat"/>
+            </set>
+        </constructor-arg>
+    </bean>
+
+    <!--Third task, bean inheritance-->
+    <bean id="topPlayer" class="com.netcracker.football.TopPlayer" scope="prototype" parent="player2">
+            <property name="position" ref="forward"/>
+            <property name="emotions" value="And he is a top player!!!"/>
+    </bean>
+   <!-- Forth task, SpEL initialization-->
+    <bean id="defaultPlayer" class="com.netcracker.football.DefaultPlayer"/>
+
+    <bean id="default" class="com.netcracker.football.Player" scope="prototype">
+        <property name="position" value="#{defaultPlayer.position}"/>
+        <property name="age" value="#{defaultPlayer.age}"/>
+        <property name="number" value="#{defaultPlayer.number}"/>
+    </bean>
+
+
+    <!--Fifth task, Autowiring-->
+    <!--ByName-->
+    <bean id="position" class ="com.netcracker.football.Goalkeaper" scope="prototype"/>
+    <bean id="autowiring1" class="com.netcracker.football.Player" scope="prototype" autowire="byName">
+        <property name="number" value ="1"/>
+        <property name="age" value ="22" />
+    </bean>
+
+    <!--Constructor-->
+    <bean id="autowiring2" class="com.netcracker.football.Player" scope="prototype" autowire="constructor">
+        <property name="number" value ="33"/>
+        <property name="age" value ="25" />
+    </bean>
+
+    <!--Sixth task-->
+    <bean id="academy" class="com.netcracker.football.AcademyFactory"/>
+
+    <bean id="createdPlayer" class="com.netcracker.football.Player" factory-bean="academy" factory-method="createPlayer">
+        <property name="position" ref="forward"/>
+        <property name="age" value="1"/>
+        <property name="number" value="1"/>
+    </bean>
+
+    <!--Seventh task-->
+    <bean id="academyTransfer" class="com.netcracker.football.AcademyFactory">
+        <lookup-method name="createPlayer" bean="player2"/>
+    </bean>
+
+
+
+</beans>
